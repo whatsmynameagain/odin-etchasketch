@@ -1,11 +1,37 @@
 
 
-let gridSize = 16;
+let gridSize = 41;
+let containerSize = 480;
 let showBorders = true;
 let bordersCSS;
-const containerSize = 480;
+
 const container = document.querySelector('#container')
 const bordersCheckbox = document.querySelector('#bordersCheckbox')
+bordersCheckbox.checked = true;
+
+const gridSizeLabel = document.querySelector("#gridsize");
+const btnGridSizeDown = document.querySelector("#gsizedown");
+const btnGridSizeUp = document.querySelector("#gsizeup");
+
+btnGridSizeDown.addEventListener('click', () => { 
+    if (gridSize > 1) {
+        gridSize--
+    }
+    btnGridSizeDown.disabled = gridSize == 0 ? true : false;
+    btnGridSizeUp.disabled = gridSize == 100 ? true : false;
+    initialize();
+})
+
+btnGridSizeUp.addEventListener('click', () => { 
+    if (gridSize < 100) {
+        gridSize++
+    } 
+    btnGridSizeUp.disabled = gridSize == 100 ? true : false;
+    btnGridSizeDown.disabled = gridSize == 0 ? true : false;
+    
+    
+    initialize();
+})
 
 bordersCheckbox.addEventListener('click', () => {
     showBorders = !showBorders;
@@ -15,45 +41,59 @@ bordersCheckbox.addEventListener('click', () => {
 function toggleBorders() {
     let children = document.querySelectorAll(".blockdefault");
     if (children.length != 0) { 
-        
-        if (showBorders) {
-            children.forEach ( child => {
-                child.classList.remove("blocknoborders") 
-                child.classList.add("blockborders")
-            })
-        } else {
-            children.forEach ( child => {
-                child.classList.remove("blockborders")
-                child.classList.add("blocknoborders") 
-            })
-        }
-        
-        
+        children.forEach ( child => {
+            child.classList.toggle("noborders") 
+            child.classList.toggle("borders")
+        })    
     }; 
 }
 
 function fillContainer(size) {
-    let children = document.querySelectorAll(".block");
-    let blockSize = Math.floor(containerSize/gridSize);
-    bordersCSS = showBorders ? "border: 1px solid grey;" : "";
+
+    //clear existing blocks
+    let children = document.querySelectorAll(".blockdefault");
     if (children.length != 0) { 
-        children.foreach ( child => 
+        
+        children.forEach ( child => 
             child.remove() ) 
     }; 
 
+
+    //let blockSize = Math.floor(containerSize/gridSize);
+    let blockSize = parseFloat((containerSize/gridSize).toFixed(4));
+    console.log(blockSize);
     for (let i=0; i<size*size; i++) {
         let childDiv = document.createElement('div');
         childDiv.classList.add("blockdefault");
-        childDiv.classList.add("blockborders");
-       /* childDiv.setAttribute("style", `
+        if (showBorders) { childDiv.classList.add("borders"); }
+        else {childDiv.classList.add("noborders");}
+        
+        childDiv.setAttribute("style", `
             height: ${blockSize}px; 
             width: ${blockSize}px;
-            `) 
-        */
+            `
+        );
+        
         container.appendChild(childDiv);
     }
  
     
 }
 
-fillContainer(gridSize);
+function initialize() {
+
+    container.setAttribute("style", `
+        width: ${containerSize}px;
+        height: ${containerSize}px;
+        grid-template-columns: repeat(${gridSize}, 1fr);
+        grid-template-rows: repeat(${gridSize}, 1fr);
+        `
+    )   
+
+    gridSizeLabel.textContent = `Grid size: ${gridSize}`;
+    
+    fillContainer(gridSize);
+}
+
+
+initialize();

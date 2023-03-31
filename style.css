@@ -13,26 +13,21 @@
 }
 
 #container{
-    display: flex;
-    flex-wrap: wrap;
-    width: 480px;
-    height: 480px;
+    display: grid;
     border: 1px solid grey;
-    background-color: rgb(179, 179, 179);
+    background-color: white;
 }
 
 .blockdefault {
-    background-color: white;
+    background-color: pink;
     box-sizing: border-box;
-    height: 30px;
-    width: 30px;
 }
 
-.blockborders{
-    border: 1px solid grey;
-
+.borders{
+    border-top: 1px solid grey;
+    border-left: 1px solid grey;
 }
 
-.blocknoborders {
+.noborders {
     border: none;
 }
