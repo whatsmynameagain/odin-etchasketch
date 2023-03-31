@@ -31,3 +31,7 @@
 .noborders {
     border: none;
 }
+
+.paintedblack {
+    background-color: black;
+}

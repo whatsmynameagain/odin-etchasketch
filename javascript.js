@@ -53,31 +53,29 @@ function fillContainer(size) {
     //clear existing blocks
     let children = document.querySelectorAll(".blockdefault");
     if (children.length != 0) { 
-        
         children.forEach ( child => 
             child.remove() ) 
     }; 
 
-
-    //let blockSize = Math.floor(containerSize/gridSize);
     let blockSize = parseFloat((containerSize/gridSize).toFixed(4));
     console.log(blockSize);
     for (let i=0; i<size*size; i++) {
         let childDiv = document.createElement('div');
         childDiv.classList.add("blockdefault");
         if (showBorders) { childDiv.classList.add("borders"); }
-        else {childDiv.classList.add("noborders");}
-        
+        else { childDiv.classList.add("noborders"); }
         childDiv.setAttribute("style", `
             height: ${blockSize}px; 
             width: ${blockSize}px;
             `
         );
-        
+        childDiv.addEventListener('mouseover', (e) => {
+            if (e.ctrlKey) { e.target.classList.add("paintedblack") }  
+            if (e.shiftKey) { e.target.classList.remove("paintedblack") }
+        });
+        //add event on click(?) toggle class filled (add class to css)
         container.appendChild(childDiv);
-    }
- 
-    
+    } 
 }
 
 function initialize() {
