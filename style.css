@@ -24,6 +24,11 @@
     gap: 5px;
 }
 
+#gridsize {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
 .controlbtn {
     width: 25px;
     height: 25px;
@@ -37,6 +42,14 @@
 
 .borders{
     border-top: 1px solid grey;
+    border-left: 1px solid grey;
+}
+
+.bordersleft {
+    border-top: 1px solid grey;
+}
+
+.borderstop {
     border-left: 1px solid grey;
 }
 

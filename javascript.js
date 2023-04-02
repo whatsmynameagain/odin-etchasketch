@@ -1,6 +1,6 @@
 
 
-let gridSize = 41;
+let gridSize = 20;
 let containerSize = 480;
 let showBorders = true;
 let bordersCSS, hoveredCell, hoveredBtn, mouseDown, btnHeld;
@@ -139,10 +139,17 @@ function fillContainer(size) {
             child.remove() ) 
     }; 
     let blockSize = parseFloat((containerSize/gridSize).toFixed(4));
+    let className = "borders";
     for (let i=0; i<size*size; i++) {
         let childDiv = document.createElement('div');
         childDiv.classList.add("blockdefault");
-        if (showBorders) { childDiv.classList.add("borders"); }
+        //avoid overlapping borders between cells and the container 
+        if (i == 0) { className = "noborders" }
+        else if (i >= 0 && i <= size-1) { className = "borderstop"; }
+        else if (i % size == 0) { className = "bordersleft"; }
+        else { className = "borders"; };
+
+        if (showBorders) { childDiv.classList.add(className); }
         else { childDiv.classList.add("noborders"); }
         childDiv.setAttribute("style", `
             height: ${blockSize}px; 
