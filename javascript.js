@@ -3,7 +3,8 @@
 let gridSize = 41;
 let containerSize = 480;
 let showBorders = true;
-let bordersCSS;
+let bordersCSS, hoveredCell, mouseDown;
+
 
 const container = document.querySelector('#container')
 const bordersCheckbox = document.querySelector('#bordersCheckbox')
@@ -12,6 +13,38 @@ bordersCheckbox.checked = true;
 const gridSizeLabel = document.querySelector("#gridsize");
 const btnGridSizeDown = document.querySelector("#gsizedown");
 const btnGridSizeUp = document.querySelector("#gsizeup");
+
+
+//draw or erase when hovering over a cell and pressing ctrl or shift
+document.addEventListener('keydown', (e) => {
+    if (!hoveredCell) { return };
+    if (e.ctrlKey) { hoveredCell.classList.add("paintedblack") }  
+    if (e.shiftKey) { hoveredCell.classList.remove("paintedblack") }
+});
+
+
+//draw when clicking on a cell
+document.addEventListener('mousedown', (e) => { 
+    mouseDown = true;
+    if (!hoveredCell) { return };
+    hoveredCell.classList.add("paintedblack");
+});
+
+
+document.addEventListener('mouseup', () => mouseDown = false);
+
+
+//reset hoveredCell when the cursor exits the conainer
+document.querySelector("#content").addEventListener('mouseover', () => {
+    hoveredCell = null;
+});
+
+
+//disable dragging
+document.addEventListener("dragstart", (e) => {
+    e.preventDefault();
+})
+
 
 btnGridSizeDown.addEventListener('click', () => { 
     if (gridSize > 1) {
@@ -22,21 +55,22 @@ btnGridSizeDown.addEventListener('click', () => {
     initialize();
 })
 
+
 btnGridSizeUp.addEventListener('click', () => { 
     if (gridSize < 100) {
         gridSize++
     } 
     btnGridSizeUp.disabled = gridSize == 100 ? true : false;
     btnGridSizeDown.disabled = gridSize == 0 ? true : false;
-    
-    
     initialize();
 })
+
 
 bordersCheckbox.addEventListener('click', () => {
     showBorders = !showBorders;
     toggleBorders();
 })
+
 
 function toggleBorders() {
     let children = document.querySelectorAll(".blockdefault");
@@ -48,17 +82,15 @@ function toggleBorders() {
     }; 
 }
 
-function fillContainer(size) {
 
+function fillContainer(size) {
     //clear existing blocks
     let children = document.querySelectorAll(".blockdefault");
     if (children.length != 0) { 
         children.forEach ( child => 
             child.remove() ) 
     }; 
-
     let blockSize = parseFloat((containerSize/gridSize).toFixed(4));
-    console.log(blockSize);
     for (let i=0; i<size*size; i++) {
         let childDiv = document.createElement('div');
         childDiv.classList.add("blockdefault");
@@ -70,16 +102,17 @@ function fillContainer(size) {
             `
         );
         childDiv.addEventListener('mouseover', (e) => {
-            if (e.ctrlKey) { e.target.classList.add("paintedblack") }  
+            hoveredCell = childDiv;
+            if (e.ctrlKey || mouseDown) { e.target.classList.add("paintedblack") }  
             if (e.shiftKey) { e.target.classList.remove("paintedblack") }
+            e.stopPropagation();
         });
-        //add event on click(?) toggle class filled (add class to css)
         container.appendChild(childDiv);
     } 
 }
 
-function initialize() {
 
+function initialize() {
     container.setAttribute("style", `
         width: ${containerSize}px;
         height: ${containerSize}px;
@@ -87,9 +120,7 @@ function initialize() {
         grid-template-rows: repeat(${gridSize}, 1fr);
         `
     )   
-
     gridSizeLabel.textContent = `Grid size: ${gridSize}`;
-    
     fillContainer(gridSize);
 }
 
