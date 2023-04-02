@@ -3,7 +3,7 @@
 let gridSize = 41;
 let containerSize = 480;
 let showBorders = true;
-let bordersCSS, hoveredCell, mouseDown;
+let bordersCSS, hoveredCell, hoveredBtn, mouseDown, btnHeld, btnInterval;
 
 
 const container = document.querySelector('#container')
@@ -37,6 +37,8 @@ document.addEventListener('mouseup', () => mouseDown = false);
 //reset hoveredCell when the cursor exits the conainer
 document.querySelector("#content").addEventListener('mouseover', () => {
     hoveredCell = null;
+    hoveredBtn = null;
+    //btnHeld = null;
 });
 
 
@@ -46,24 +48,59 @@ document.addEventListener("dragstart", (e) => {
 })
 
 
-btnGridSizeDown.addEventListener('click', () => { 
-    if (gridSize > 1) {
-        gridSize--
-    }
-    btnGridSizeDown.disabled = gridSize == 0 ? true : false;
+//intervals are being created en masse after multiple clicks and not cleared
+
+btnGridSizeDown.addEventListener('mouseup', (e) => { 
+    mouseDown = true;
+    hoveredBtn = e.target;
+    setTimeout(() => {
+        btnInterval = setInterval( () => {
+            if (mouseDown && gridSize > 1 && hoveredBtn === e.target) {
+                gridSize--;
+                gridSizeLabel.textContent = `Grid size: ${gridSize}`;
+            } else {
+                clearInterval(btnInterval);
+            } 
+            btnGridSizeDown.disabled = gridSize == 1 ? true : false;
+            btnGridSizeUp.disabled = gridSize == 100 ? true : false;
+        }, 
+    100 );  
+    }, 200);
+})
+btnGridSizeDown.addEventListener('click', () => {
+    clearInterval(btnInterval); 
+    if (gridSize > 1) { gridSize-- };
+    btnGridSizeDown.disabled = gridSize == 1 ? true : false;
     btnGridSizeUp.disabled = gridSize == 100 ? true : false;
     initialize();
+});
+
+
+btnGridSizeUp.addEventListener('mouseup', (e) => { 
+    mouseDown = true;
+    hoveredBtn = e.target;
+    setTimeout(() => {
+        btnInterval = setInterval( () => {
+            console.log("test");
+            if (mouseDown && gridSize < 100 && hoveredBtn === e.target) {
+                gridSize++;
+                gridSizeLabel.textContent = `Grid size: ${gridSize}`;
+            } else {
+                clearInterval(btnInterval);
+            }
+            btnGridSizeUp.disabled = gridSize == 100 ? true : false;
+            btnGridSizeDown.disabled = gridSize == 1 ? true : false;
+        }, 
+    100 );
+    }, 200);
 })
-
-
 btnGridSizeUp.addEventListener('click', () => { 
-    if (gridSize < 100) {
-        gridSize++
-    } 
+    clearInterval(btnInterval);
+    if (gridSize < 100) { gridSize++ };
     btnGridSizeUp.disabled = gridSize == 100 ? true : false;
-    btnGridSizeDown.disabled = gridSize == 0 ? true : false;
+    btnGridSizeDown.disabled = gridSize == 1 ? true : false;
     initialize();
-})
+});
 
 
 bordersCheckbox.addEventListener('click', () => {
