@@ -18,6 +18,18 @@
     background-color: white;
 }
 
+#gridcontrols {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.controlbtn {
+    width: 25px;
+    height: 25px;
+    font-size: 12px;
+}
+
 .blockdefault {
     background-color: white;
     box-sizing: border-box;
