@@ -7,9 +7,11 @@
     align-items: center;
     gap: 20px;
 }
-#bordersToggle {
+#options {
     display: flex;
-    gap: 5px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
 }
 
 #container{
@@ -27,6 +29,16 @@
 #gridsize {
     margin-left: 5px;
     margin-right: 5px;
+}
+
+#borderscontainer {
+    display: flex;
+    gap: 5px;
+}
+
+#clear {
+    width: 50px;
+    height: 30px;
 }
 
 .controlbtn {
@@ -57,6 +69,8 @@
     border: none;
 }
 
+
+/* get rid of this and do all via inline */
 .paintedblack {
     background-color: black;
 }

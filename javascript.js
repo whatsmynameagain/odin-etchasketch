@@ -3,11 +3,11 @@
 let gridSize = 20;
 let containerSize = 480;
 let showBorders = true;
-let bordersCSS, hoveredCell, hoveredBtn, mouseDown, btnHeld;
+let bordersCSS, hoveredCell, hoveredBtn, mouseDown, btnHeld, btnInterval, btnTimeout;
 let btnIntervalActive = false;
 
 const container = document.querySelector('#container')
-const bordersCheckbox = document.querySelector('#bordersCheckbox')
+const bordersCheckbox = document.querySelector('#borderscheckbox')
 bordersCheckbox.checked = true;
 
 const gridSizeLabel = document.querySelector("#gridsize");
@@ -15,6 +15,7 @@ const btnGridSizeDownFast = document.querySelector("#gsizedownfast");
 const btnGridSizeDown = document.querySelector("#gsizedown");
 const btnGridSizeUp = document.querySelector("#gsizeup");
 const btnGridSizeUpFast = document.querySelector("#gsizeupfast");
+const btnClear = document.querySelector("#clear");
 
 
 //draw or erase when hovering over a cell and pressing ctrl or shift
@@ -49,7 +50,7 @@ document.addEventListener("dragstart", (e) => {
     e.preventDefault();
 })
 
-
+//if click is slower than interval size, jumps two units
 btnGridSizeDownFast.addEventListener('mousedown', (e) => { 
     mouseDown = true;
     hoveredBtn = e.target;
@@ -58,13 +59,14 @@ btnGridSizeDownFast.addEventListener('mousedown', (e) => {
     btnGridSizeUp.disabled = btnGridSizeUpFast.disabled = gridSize == 100 ? true : false;
     if (!btnIntervalActive) {
         btnIntervalActive = true;
-        let btnInterval = setInterval( () => {
+        btnInterval = setInterval( () => {
             if (mouseDown && gridSize > 1 && hoveredBtn === e.target) {
                 gridSize--;
                 gridSizeLabel.textContent = `Grid size: ${gridSize}`;
             } else {
                 clearInterval(btnInterval);
                 btnIntervalActive = false;
+                initialize();
             } 
             btnGridSizeDown.disabled = btnGridSizeDownFast.disabled = gridSize == 1 ? true : false;
             btnGridSizeUp.disabled = btnGridSizeUpFast.disabled = gridSize == 100 ? true : false;
@@ -72,6 +74,8 @@ btnGridSizeDownFast.addEventListener('mousedown', (e) => {
     }
 });
 btnGridSizeDownFast.addEventListener('mouseup', (e) => { 
+    clearInterval(btnInterval);
+    btnIntervalActive = false;
     initialize();
 });
 btnGridSizeDown.addEventListener('click', () => {
@@ -81,7 +85,7 @@ btnGridSizeDown.addEventListener('click', () => {
     initialize();
 });
 
-
+//if click is slower than interval size, jumps two units
 btnGridSizeUpFast.addEventListener('mousedown', (e) => { 
     mouseDown = true;
     hoveredBtn = e.target;
@@ -90,13 +94,14 @@ btnGridSizeUpFast.addEventListener('mousedown', (e) => {
     btnGridSizeDown.disabled = btnGridSizeDownFast.disabled = gridSize == 1 ? true : false;
     if (!btnIntervalActive) {
         btnIntervalActive = true;
-        let btnInterval = setInterval( () => {
+        btnInterval = setInterval( () => {
             if (mouseDown && gridSize < 100 && hoveredBtn === e.target) {
                 gridSize++;
                 gridSizeLabel.textContent = `Grid size: ${gridSize}`;
             } else {
                 clearInterval(btnInterval);
                 btnIntervalActive = false;
+                initialize();
             }
             btnGridSizeUp.disabled = btnGridSizeUpFast.disabled = gridSize == 100 ? true : false;
             btnGridSizeDown.disabled = btnGridSizeDownFast.disabled = gridSize == 1 ? true : false;
@@ -104,6 +109,8 @@ btnGridSizeUpFast.addEventListener('mousedown', (e) => {
     }   
 });
 btnGridSizeUpFast.addEventListener('mouseup', (e) => { 
+    clearInterval(btnInterval);
+    btnIntervalActive = false;
     initialize();
 });
 btnGridSizeUp.addEventListener('click', () => { 
@@ -117,6 +124,18 @@ btnGridSizeUp.addEventListener('click', () => {
 bordersCheckbox.addEventListener('click', () => {
     showBorders = !showBorders;
     toggleBorders();
+})
+
+
+btnClear.addEventListener('click', () => {
+    let children = document.querySelectorAll(".blockdefault");
+    if (children.length != 0) { 
+        children.forEach ( child => {
+            child.removeAttribute("style");
+            child.classList.remove("paintedblack");
+            //this breaks once random colors are implemented
+        })    
+    }; 
 })
 
 
@@ -158,6 +177,8 @@ function fillContainer(size) {
         );
         childDiv.addEventListener('mouseover', (e) => {
             hoveredCell = childDiv;
+            //this fails if other colors are added inline
+            //probably going to have to switch to all inline and keep the colors saved as variables
             if (e.ctrlKey || mouseDown) { e.target.classList.add("paintedblack") }  
             if (e.shiftKey) { e.target.classList.remove("paintedblack") }
             e.stopPropagation();
