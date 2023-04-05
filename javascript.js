@@ -3,19 +3,15 @@
 let gridSize = 20;
 let containerSize = 480;
 let showBorders = true;
-let bordersCSS, hoveredCell, hoveredBtn, mouseDown, btnHeld, btnInterval, btnTimeout;
-let btnIntervalActive = false;
+let bordersCSS, hoveredCell, hoveredBtn, mouseDown;
 
 const container = document.querySelector('#container')
 const bordersCheckbox = document.querySelector('#borderscheckbox')
 bordersCheckbox.checked = true;
-
 const gridSizeLabel = document.querySelector("#gridsize");
-const btnGridSizeDownFast = document.querySelector("#gsizedownfast");
-const btnGridSizeDown = document.querySelector("#gsizedown");
-const btnGridSizeUp = document.querySelector("#gsizeup");
-const btnGridSizeUpFast = document.querySelector("#gsizeupfast");
 const btnClear = document.querySelector("#clear");
+const sizeSlider = document.querySelector("#gridsizeslider");
+sizeSlider.setAttribute("value", gridSize);
 
 
 //draw or erase when hovering over a cell and pressing ctrl or shift
@@ -50,76 +46,6 @@ document.addEventListener("dragstart", (e) => {
     e.preventDefault();
 })
 
-//if click is slower than interval size, jumps two units
-btnGridSizeDownFast.addEventListener('mousedown', (e) => { 
-    mouseDown = true;
-    hoveredBtn = e.target;
-    if (gridSize > 1) { gridSize-- };
-    btnGridSizeDown.disabled = btnGridSizeDownFast.disabled = gridSize == 1 ? true : false;
-    btnGridSizeUp.disabled = btnGridSizeUpFast.disabled = gridSize == 100 ? true : false;
-    if (!btnIntervalActive) {
-        btnIntervalActive = true;
-        btnInterval = setInterval( () => {
-            if (mouseDown && gridSize > 1 && hoveredBtn === e.target) {
-                gridSize--;
-                gridSizeLabel.textContent = `Grid size: ${gridSize}`;
-            } else {
-                clearInterval(btnInterval);
-                btnIntervalActive = false;
-                initialize();
-            } 
-            btnGridSizeDown.disabled = btnGridSizeDownFast.disabled = gridSize == 1 ? true : false;
-            btnGridSizeUp.disabled = btnGridSizeUpFast.disabled = gridSize == 100 ? true : false;
-        }, 75 );  
-    }
-});
-btnGridSizeDownFast.addEventListener('mouseup', (e) => { 
-    clearInterval(btnInterval);
-    btnIntervalActive = false;
-    initialize();
-});
-btnGridSizeDown.addEventListener('click', () => {
-    if (gridSize > 1) { gridSize-- };
-    btnGridSizeDown.disabled = btnGridSizeDownFast.disabled = gridSize == 1 ? true : false;
-    btnGridSizeUp.disabled = btnGridSizeUpFast.disabled = gridSize == 100 ? true : false;
-    initialize();
-});
-
-//if click is slower than interval size, jumps two units
-btnGridSizeUpFast.addEventListener('mousedown', (e) => { 
-    mouseDown = true;
-    hoveredBtn = e.target;
-    if (gridSize < 100) { gridSize++ };
-    btnGridSizeUp.disabled = btnGridSizeUpFast.disabled = gridSize == 100 ? true : false;
-    btnGridSizeDown.disabled = btnGridSizeDownFast.disabled = gridSize == 1 ? true : false;
-    if (!btnIntervalActive) {
-        btnIntervalActive = true;
-        btnInterval = setInterval( () => {
-            if (mouseDown && gridSize < 100 && hoveredBtn === e.target) {
-                gridSize++;
-                gridSizeLabel.textContent = `Grid size: ${gridSize}`;
-            } else {
-                clearInterval(btnInterval);
-                btnIntervalActive = false;
-                initialize();
-            }
-            btnGridSizeUp.disabled = btnGridSizeUpFast.disabled = gridSize == 100 ? true : false;
-            btnGridSizeDown.disabled = btnGridSizeDownFast.disabled = gridSize == 1 ? true : false;
-        }, 75 );
-    }   
-});
-btnGridSizeUpFast.addEventListener('mouseup', (e) => { 
-    clearInterval(btnInterval);
-    btnIntervalActive = false;
-    initialize();
-});
-btnGridSizeUp.addEventListener('click', () => { 
-    if (gridSize < 100) { gridSize++ };
-    btnGridSizeUp.disabled = btnGridSizeUpFast.disabled = gridSize == 100 ? true : false;
-    btnGridSizeDown.disabled = btnGridSizeDownFast.disabled = gridSize == 1 ? true : false;
-    initialize();
-});
-
 
 bordersCheckbox.addEventListener('click', () => {
     showBorders = !showBorders;
@@ -148,6 +74,16 @@ function toggleBorders() {
         })    
     }; 
 }
+
+
+sizeSlider.addEventListener('input', (e) => {
+    gridSize = e.target.value
+    gridSizeLabel.textContent = `Grid size: ${gridSize}`;
+});
+
+sizeSlider.addEventListener('mouseup', () => {
+    initialize();
+});
 
 
 function fillContainer(size) {

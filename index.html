@@ -7,21 +7,17 @@
     <title>Etch-A-Sketch</title>
     <link rel="stylesheet" href="style.css">
 <body>
-    
     <div id="content">
-        <div id="gridcontrols">
-            <button id="gsizedownfast" class="controlbtn">&lt;&lt;</button>
-            <button id="gsizedown" class="controlbtn">-</button>
-            <p id="gridsize"></p>
-            <button id="gsizeup" class="controlbtn">+</button>
-            <button id="gsizeupfast" class="controlbtn">&gt;&gt;</button>
-        </div>
         <div id="options">
             <div id="borderscontainer">
                 <p> Borders </p>
-                <input type="checkbox" id="borderscheckbox" name="bordersThing">
+                <input type="checkbox" id="borderscheckbox" name="bordersthing">
             </div>
             <button id="clear">Clear</button>
+        </div>
+        <p id="gridsize"></p>
+        <div class="slidecontainer">
+            <input type="range" min="1" max="100" value="20" class="slider" id="gridsizeslider" autocomplete="off">
         </div>
         <div id="container"></div>
     </div>
