@@ -32,7 +32,7 @@ sizeSlider.setAttribute("value", gridSize);
 document.addEventListener('keydown', (e) => {
     if (!hoveredCell) { return }
     if (e.ctrlKey) { 
-        drawOnCell(e.hoveredCell)
+        drawOnCell(hoveredCell)
     }  
     if (e.shiftKey) { hoveredCell.style.backgroundColor = "rgb(255, 255, 255)" }
 });
@@ -164,6 +164,7 @@ function fillContainer(size) {
 
 
 //assumes cell.style.backgroundColor is either in 'rgb(r, g, b)' format or null
+//could add an option to reverse shading while holding shift
 function drawOnCell(cell) {
     switch (mode) {
         case Modes.Rainbow:
@@ -191,6 +192,7 @@ function getRGBValue(str) {
             .split(",") //create array splitting at the ','
             .map(Number); //convert str numbers into... numbers
 }
+
 
 function initialize() {
     container.setAttribute("style", `
