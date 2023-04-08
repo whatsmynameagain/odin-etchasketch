@@ -1,32 +1,48 @@
 
+/*
+Notes:
+-grid size bar shouldn't be too close to the drawing area in case of misclicks
+*/
+
 
 let gridSize = 20;
 let containerSize = 480;
 let showBorders = true;
-let bordersCSS, hoveredCell, hoveredBtn, mouseDown;
+let bordersCSS, hoveredCell, mouseDown;
+let cellColor = "rgb(0, 0, 0)";
+
+const Modes = {
+    Default : 0,
+    Rainbow : 1,
+    Shading : 2
+}
+let mode = Modes.Default;
 
 const container = document.querySelector('#container')
 const bordersCheckbox = document.querySelector('#borderscheckbox')
 bordersCheckbox.checked = true;
 const gridSizeLabel = document.querySelector("#gridsize");
 const btnClear = document.querySelector("#clear");
+const btnOptions = document.querySelector("#modes");
 const sizeSlider = document.querySelector("#gridsizeslider");
 sizeSlider.setAttribute("value", gridSize);
 
 
 //draw or erase when hovering over a cell and pressing ctrl or shift
 document.addEventListener('keydown', (e) => {
-    if (!hoveredCell) { return };
-    if (e.ctrlKey) { hoveredCell.classList.add("paintedblack") }  
-    if (e.shiftKey) { hoveredCell.classList.remove("paintedblack") }
+    if (!hoveredCell) { return }
+    if (e.ctrlKey) { 
+        drawOnCell(e.hoveredCell)
+    }  
+    if (e.shiftKey) { hoveredCell.style.backgroundColor = "rgb(255, 255, 255)" }
 });
 
 
 //draw when clicking on a cell
 document.addEventListener('mousedown', (e) => { 
     mouseDown = true;
-    if (!hoveredCell) { return };
-    hoveredCell.classList.add("paintedblack");
+    if (!hoveredCell) { return }
+    drawOnCell(hoveredCell)
 });
 
 
@@ -36,8 +52,6 @@ document.addEventListener('mouseup', () => mouseDown = false);
 //reset hoveredCell when the cursor exits the conainer
 document.querySelector("#content").addEventListener('mouseover', () => {
     hoveredCell = null;
-    hoveredBtn = null;
-    //btnHeld = null;
 });
 
 
@@ -57,11 +71,26 @@ btnClear.addEventListener('click', () => {
     let children = document.querySelectorAll(".blockdefault");
     if (children.length != 0) { 
         children.forEach ( child => {
-            child.removeAttribute("style");
-            child.classList.remove("paintedblack");
-            //this breaks once random colors are implemented
+            child.style.backgroundColor = "rgb(255, 255, 255)";
         })    
-    }; 
+    }
+})
+
+
+btnOptions.addEventListener("change", (e) => {
+    switch (e.target.value) {
+        case "default": 
+            mode = Modes.Default;
+            break;
+        case "rainbow":
+            mode = Modes.Rainbow;
+            break;
+        case "shading":
+            mode = Modes.Shading;
+            break;
+        default:
+            console.log("oh no");
+    }
 })
 
 
@@ -72,18 +101,29 @@ function toggleBorders() {
             child.classList.toggle("noborders") 
             child.classList.toggle("borders")
         })    
-    }; 
+    }
 }
 
 
 sizeSlider.addEventListener('input', (e) => {
     gridSize = e.target.value
     gridSizeLabel.textContent = `Grid size: ${gridSize}`;
-});
+})
+
 
 sizeSlider.addEventListener('mouseup', () => {
     initialize();
-});
+})
+
+
+function randomInt(max) {
+    return Math.floor(Math.random() * max);
+}
+
+
+function randomRGB() {
+    return `rgb(${randomInt(256)}, ${randomInt(256)}, ${randomInt(256)})`;
+}
 
 
 function fillContainer(size) {
@@ -92,7 +132,7 @@ function fillContainer(size) {
     if (children.length != 0) { 
         children.forEach ( child => 
             child.remove() ) 
-    }; 
+    }
     let blockSize = parseFloat((containerSize/gridSize).toFixed(4));
     let className = "borders";
     for (let i=0; i<size*size; i++) {
@@ -102,7 +142,7 @@ function fillContainer(size) {
         if (i == 0) { className = "noborders" }
         else if (i >= 0 && i <= size-1) { className = "borderstop"; }
         else if (i % size == 0) { className = "bordersleft"; }
-        else { className = "borders"; };
+        else { className = "borders"; }
 
         if (showBorders) { childDiv.classList.add(className); }
         else { childDiv.classList.add("noborders"); }
@@ -113,16 +153,44 @@ function fillContainer(size) {
         );
         childDiv.addEventListener('mouseover', (e) => {
             hoveredCell = childDiv;
-            //this fails if other colors are added inline
-            //probably going to have to switch to all inline and keep the colors saved as variables
-            if (e.ctrlKey || mouseDown) { e.target.classList.add("paintedblack") }  
-            if (e.shiftKey) { e.target.classList.remove("paintedblack") }
+            if (e.ctrlKey || mouseDown) { drawOnCell(e.target) } 
+            if (e.shiftKey) { e.target.style.backgroundColor = "rgb(255, 255, 255)"}
+            
             e.stopPropagation();
         });
         container.appendChild(childDiv);
     } 
 }
 
+
+//assumes cell.style.backgroundColor is either in 'rgb(r, g, b)' format or null
+function drawOnCell(cell) {
+    switch (mode) {
+        case Modes.Rainbow:
+            cellColor = randomRGB();
+            break;
+        case Modes.Shading:
+            if (cell.style.backgroundColor) { 
+                const values = getRGBValue(cell.style.backgroundColor);
+                let clampedValues = values.map((n) => Math.min(Math.max(n-26, 0), 255)); //just in case css complains about < 0 or > 255 values
+                cellColor = `rgb(${clampedValues[0]}, ${clampedValues[1]}, ${clampedValues[2]})`
+            } else {
+                cellColor = 'rgb(229, 229, 229)';
+            }
+            break;
+        case Modes.Default:
+            cellColor = "rgb(0, 0, 0)";        
+    }
+    cell.style.backgroundColor = cellColor;
+}
+
+
+function getRGBValue(str) {
+    return str.substring(4, str.length-1) //remove 'rgb('  and ')'
+            .replace(/ /g, '') //remove empty spaces
+            .split(",") //create array splitting at the ','
+            .map(Number); //convert str numbers into... numbers
+}
 
 function initialize() {
     container.setAttribute("style", `
@@ -136,5 +204,5 @@ function initialize() {
     fillContainer(gridSize);
 }
 
-
+btnOptions.value = "default";
 initialize();

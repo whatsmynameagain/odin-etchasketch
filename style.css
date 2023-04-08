@@ -1,4 +1,9 @@
 
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
 #content{
     display: flex;
     flex-direction: column;
@@ -8,10 +13,9 @@
     gap: 5px;
 }
 #options {
-    display: flex;
+    display: grid;
     justify-content: center;
     align-items: center;
-    gap: 10px;
 }
 
 #container{
@@ -19,7 +23,6 @@
     border: 1px solid grey;
     background-color: white;
 }
-
 
 #borderscontainer {
     display: flex;
@@ -54,16 +57,16 @@
 }
 
 
-/* get rid of this and do all via inline */
-.paintedblack {
-    background-color: black;
-}
-
-
-/* shamelessly taken from  https://www.w3schools.com/howto/howto_js_rangeslider.asp */
+/* shamelessly taken from https://www.w3schools.com/howto/howto_js_rangeslider.asp */
 
 .slidecontainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     width: 480px; /* Width of the outside container */
+    gap: 10px;
+    margin-bottom: 10px;
   }
   
   /* The slider itself */
@@ -71,7 +74,7 @@
     -webkit-appearance: none;  /* Override default CSS styles */
     appearance: none;
     width: 100%; /* Full-width */
-    height: 25px; /* Specified height */
+    height: 10px; /* Specified height */
     background: #d3d3d3; /* Grey background */
     outline: none; /* Remove outline */
     opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
@@ -88,15 +91,16 @@
   .slider::-webkit-slider-thumb {
     -webkit-appearance: none; /* Override default look */
     appearance: none;
-    width: 25px; /* Set a specific slider handle width */
-    height: 25px; /* Slider handle height */
+    width: 15px; /* Set a specific slider handle width */
+    height: 15px; /* Slider handle height */
     background: #04AA6D; /* Green background */
     cursor: pointer; /* Cursor on hover */
   }
   
   .slider::-moz-range-thumb {
-    width: 25px; /* Set a specific slider handle width */
-    height: 25px; /* Slider handle height */
-    background: #04AA6D; /* Green background */
+    width: 20px; /* Set a specific slider handle width */
+    height: 20px; /* Slider handle height */
+    background: darkgrey; /* Green background */
     cursor: pointer; /* Cursor on hover */
+    border-radius: 50%
   }
