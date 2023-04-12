@@ -2,6 +2,7 @@
 /*
 Notes:
 -grid size bar shouldn't be too close to the drawing area in case of misclicks
+-cpu 100%'d while the site was open and stopped once the tab was closed. Keep an eye on that.
 */
 
 
@@ -9,7 +10,8 @@ let gridSize = 20;
 let containerSize = 480;
 let showBorders = true;
 let bordersCSS, hoveredCell, mouseDown;
-let cellColor = "rgb(0, 0, 0)";
+let cellColor, blackRGB = "rgb(0, 0, 0)";
+let whiteRGB = "rgb(255, 255, 255)"
 
 const Modes = {
     Default : 0,
@@ -31,10 +33,8 @@ sizeSlider.setAttribute("value", gridSize);
 //draw or erase when hovering over a cell and pressing ctrl or shift
 document.addEventListener('keydown', (e) => {
     if (!hoveredCell) { return }
-    if (e.ctrlKey) { 
-        drawOnCell(hoveredCell)
-    }  
-    if (e.shiftKey) { hoveredCell.style.backgroundColor = "rgb(255, 255, 255)" }
+    if (e.ctrlKey) { drawOnCell(hoveredCell) }  
+    if (e.shiftKey) { hoveredCell.style.backgroundColor = whiteRGB }
 });
 
 
@@ -58,23 +58,23 @@ document.querySelector("#content").addEventListener('mouseover', () => {
 //disable dragging
 document.addEventListener("dragstart", (e) => {
     e.preventDefault();
-})
+});
 
 
 bordersCheckbox.addEventListener('click', () => {
     showBorders = !showBorders;
     toggleBorders();
-})
+});
 
 
 btnClear.addEventListener('click', () => {
     let children = document.querySelectorAll(".blockdefault");
-    if (children.length != 0) { 
+    if (children.length) { 
         children.forEach ( child => {
-            child.style.backgroundColor = "rgb(255, 255, 255)";
+            child.style.backgroundColor = whiteRGB;
         })    
     }
-})
+});
 
 
 btnOptions.addEventListener("change", (e) => {
@@ -91,13 +91,15 @@ btnOptions.addEventListener("change", (e) => {
         default:
             console.log("oh no");
     }
-})
+});
 
 
 function toggleBorders() {
     let children = document.querySelectorAll(".blockdefault");
-    if (children.length != 0) { 
-        children.forEach ( child => {
+    if (children.length) { 
+        //gotta go though all cells except the first one and querySelectorAll returns a NodeList, which complicates things
+        //so, gotta create an array from the NodeList and iterate through a sliced version that skips the first element
+        Array.from(children).slice(1).forEach ( child => {
             child.classList.toggle("noborders") 
             child.classList.toggle("borders")
         })    
@@ -108,12 +110,12 @@ function toggleBorders() {
 sizeSlider.addEventListener('input', (e) => {
     gridSize = e.target.value
     gridSizeLabel.textContent = `Grid size: ${gridSize}`;
-})
+});
 
 
 sizeSlider.addEventListener('mouseup', () => {
     initialize();
-})
+});
 
 
 function randomInt(max) {
@@ -154,7 +156,7 @@ function fillContainer(size) {
         childDiv.addEventListener('mouseover', (e) => {
             hoveredCell = childDiv;
             if (e.ctrlKey || mouseDown) { drawOnCell(e.target) } 
-            if (e.shiftKey) { e.target.style.backgroundColor = "rgb(255, 255, 255)"}
+            if (e.shiftKey) { e.target.style.backgroundColor = whiteRGB}
             
             e.stopPropagation();
         });
@@ -164,7 +166,7 @@ function fillContainer(size) {
 
 
 //assumes cell.style.backgroundColor is either in 'rgb(r, g, b)' format or null
-//could add an option to reverse shading while holding shift
+//could add an option for reverse shading (lighten)
 function drawOnCell(cell) {
     switch (mode) {
         case Modes.Rainbow:
@@ -180,7 +182,7 @@ function drawOnCell(cell) {
             }
             break;
         case Modes.Default:
-            cellColor = "rgb(0, 0, 0)";        
+            cellColor = blackRGB;        
     }
     cell.style.backgroundColor = cellColor;
 }
@@ -189,7 +191,7 @@ function drawOnCell(cell) {
 function getRGBValue(str) {
     return str.substring(4, str.length-1) //remove 'rgb('  and ')'
             .replace(/ /g, '') //remove empty spaces
-            .split(",") //create array splitting at the ','
+            .split(",") //create array splitting at ','
             .map(Number); //convert str numbers into... numbers
 }
 
