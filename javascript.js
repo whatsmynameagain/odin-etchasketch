@@ -148,8 +148,11 @@ function fillContainer(size) {
         );
         childDiv.addEventListener('mouseover', (e) => {
             hoveredCell = childDiv;
-            if (e.ctrlKey || mouseDown) { drawOnCell(e.target) } 
-            if (e.shiftKey) { e.target.style.backgroundColor = whiteRGB}
+            if (e.ctrlKey || mouseDown) { 
+                drawOnCell(e.target); 
+                return; 
+            } 
+            if (e.shiftKey) { e.target.style.backgroundColor = whiteRGB }
             
             e.stopPropagation();
         });
