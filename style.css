@@ -23,7 +23,6 @@ body {
     margin-top: -16px;
 }
 
-
 #options, #modes {
     display: flex;
     flex-direction: column;
@@ -58,6 +57,7 @@ body {
     border-color: rgb(44, 44, 44);
     padding-bottom: 10px;
 }
+
 .radio-option input[type="radio"] {
     order: 2;
 }
