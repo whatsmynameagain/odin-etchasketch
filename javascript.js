@@ -68,7 +68,7 @@ bordersCheckbox.addEventListener('click', () => {
 
 
 btnClear.addEventListener('click', () => {
-    let children = document.querySelectorAll(".blockdefault");
+    let children = document.querySelectorAll(".block");
     if (children.length) { 
         children.forEach ( child => {
             child.style.backgroundColor = whiteRGB;
@@ -95,9 +95,9 @@ btnOptions.addEventListener("change", (e) => {
 
 
 function toggleBorders() {
-    let children = document.querySelectorAll(".blockdefault");
+    let children = document.querySelectorAll(".block");
     if (children.length) { 
-        //gotta go though all cells except the first one and querySelectorAll returns a NodeList, which complicates things
+        //gotta go though all cells except the first one, and querySelectorAll returns a NodeList, which complicates things
         //so, gotta create an array from the NodeList and iterate through a sliced version that skips the first element
         Array.from(children).slice(1).forEach ( child => {
             child.classList.toggle("noborders") 
@@ -130,7 +130,7 @@ function randomRGB() {
 
 function fillContainer(size) {
     //clear existing blocks
-    let children = document.querySelectorAll(".blockdefault");
+    let children = document.querySelectorAll(".block");
     if (children.length != 0) { 
         children.forEach ( child => 
             child.remove() ) 
@@ -139,7 +139,7 @@ function fillContainer(size) {
     let className = "borders";
     for (let i=0; i<size*size; i++) {
         let childDiv = document.createElement('div');
-        childDiv.classList.add("blockdefault");
+        childDiv.classList.add("block");
         //avoid overlapping borders between cells and the container 
         if (i == 0) { className = "noborders" }
         else if (i >= 0 && i <= size-1) { className = "borderstop"; }
@@ -166,7 +166,7 @@ function fillContainer(size) {
 
 
 //assumes cell.style.backgroundColor is either in 'rgb(r, g, b)' format or null
-//could add an option for reverse shading (lighten)
+//could add an option for reverse shading (lighten) eventually
 function drawOnCell(cell) {
     switch (mode) {
         case Modes.Rainbow:

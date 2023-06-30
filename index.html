@@ -8,33 +8,39 @@
     <link rel="stylesheet" href="style.css">
 <body>
     <div id="content">
+        <!-- left -->
         <div id="options">
             <div id="borderscontainer">
                 <p> Borders </p>
                 <input type="checkbox" id="borderscheckbox" name="bordersthing">
             </div>
-            <button id="clear">Clear</button>
             <div id="modes">
-                <div>
+                <div class="radio-option">
                     <input type="radio" id="optiondefault" name="options" value="default" autocomplete="off" checked>
-                    <label for="default">Default</label>
+                    <label for="optiondefault">Default</label>
                 </div>
-                <div>
+                <div class="radio-option">
                     <input type="radio" id="optionrainbow" name="options" value="rainbow" autocomplete="off">
-                    <label for="rainbow">Rainbow</label>
+                    <label for="optionrainbow">Rainbow</label>
                 </div>
-                <div>
+                <div class="radio-option">
                     <input type="radio" id="optionshading" name="options" value="shading" autocomplete="off">
-                    <label for="shading">Shading</label>
+                    <label for="optionshading">Shading</label>
                 </div>
             </div>
         </div>
         
-        <div class="slidecontainer">
-            <p id="gridsize"></p>
-            <input type="range" min="1" max="100" value="20" class="slider" id="gridsizeslider" autocomplete="off">
+        <!-- center -->
+        <div id="center">
+            <div class="slidecontainer">
+                <input type="range" min="1" max="100" value="20" class="slider" id="gridsizeslider" autocomplete="off">
+                <p id="gridsize"></p>
+            </div>
+            <div id="container"></div>
         </div>
-        <div id="container"></div>
+
+        <!-- right -->
+        <button id="clear">Clear</button>
     </div>
 </body>
 <script src="javascript.js"></script>
