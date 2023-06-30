@@ -25,9 +25,9 @@ sizeSlider.setAttribute("value", gridSize);
 
 //draw or erase when hovering over a cell and pressing ctrl or shift
 document.addEventListener('keydown', (e) => {
-    if (!hoveredCell) { return }
-    if (e.ctrlKey) { drawOnCell(hoveredCell) }  
-    if (e.shiftKey) { hoveredCell.style.backgroundColor = whiteRGB }
+    if (!hoveredCell) { return };
+    if (e.ctrlKey || e.key == "Control") { drawOnCell(hoveredCell) } 
+    if (e.shiftKey || e.key == "Shift") { hoveredCell.style.backgroundColor = whiteRGB }
 });
 
 
