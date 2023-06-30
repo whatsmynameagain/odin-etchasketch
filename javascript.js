@@ -1,11 +1,4 @@
 
-/*
-Notes:
--grid size bar shouldn't be too close to the drawing area in case of misclicks
--cpu 100%'d while the site was open and stopped once the tab was closed. Keep an eye on that.
-*/
-
-
 let gridSize = 20;
 let containerSize = 480;
 let showBorders = true;
