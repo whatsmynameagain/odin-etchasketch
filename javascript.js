@@ -25,16 +25,16 @@ sizeSlider.setAttribute("value", gridSize);
 
 //draw or erase when hovering over a cell and pressing ctrl or shift
 document.addEventListener('keydown', (e) => {
-    if (!hoveredCell) { return };
-    if (e.ctrlKey || e.key == "Control") { drawOnCell(hoveredCell) } 
-    if (e.shiftKey || e.key == "Shift") { hoveredCell.style.backgroundColor = whiteRGB }
+    if (!hoveredCell) return;
+    if (e.ctrlKey || e.key == "Control") drawOnCell(hoveredCell);
+    if (e.shiftKey || e.key == "Shift") hoveredCell.style.backgroundColor = whiteRGB;
 });
 
 
 //draw when clicking on a cell
 document.addEventListener('mousedown', (e) => { 
     mouseDown = true;
-    if (!hoveredCell) { return }
+    if (!hoveredCell) return;
     drawOnCell(hoveredCell)
 });
 
@@ -92,10 +92,11 @@ function toggleBorders() {
     if (children.length) { 
         //gotta go though all cells except the first one, and querySelectorAll returns a NodeList, which complicates things
         //so, gotta create an array from the NodeList and iterate through a sliced version that skips the first element
-        Array.from(children).slice(1).forEach ( child => {
-            child.classList.toggle("noborders") 
-            child.classList.toggle("borders")
-        })    
+        Array.from(children).slice(1)
+            .forEach ( child => {
+                child.classList.toggle("noborders") 
+                child.classList.toggle("borders")
+            })    
     }
 }
 
@@ -134,13 +135,13 @@ function fillContainer(size) {
         let childDiv = document.createElement('div');
         childDiv.classList.add("block");
         //avoid overlapping borders between cells and the container 
-        if (i == 0) { className = "noborders" }
-        else if (i >= 0 && i <= size-1) { className = "borderstop"; }
-        else if (i % size == 0) { className = "bordersleft"; }
-        else { className = "borders"; }
+        if (i == 0) className = "noborders";
+        else if (i >= 0 && i <= size-1) className = "borderstop";
+        else if (i % size == 0) className = "bordersleft";
+        else className = "borders";
 
-        if (showBorders) { childDiv.classList.add(className); }
-        else { childDiv.classList.add("noborders"); }
+        if (showBorders) childDiv.classList.add(className);
+        else childDiv.classList.add("noborders");
         childDiv.setAttribute("style", `
             height: ${blockSize}px; 
             width: ${blockSize}px;
@@ -152,7 +153,7 @@ function fillContainer(size) {
                 drawOnCell(e.target); 
                 return; 
             } 
-            if (e.shiftKey) { e.target.style.backgroundColor = whiteRGB }
+            if (e.shiftKey) e.target.style.backgroundColor = whiteRGB
             
             e.stopPropagation();
         });
